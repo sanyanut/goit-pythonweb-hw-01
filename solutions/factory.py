@@ -5,7 +5,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 
 
 class Vehicle(ABC):
-    def __init__(self, make, model, spec) -> None:
+    def __init__(self, make: str, model: str, spec) -> None:
         self.make = make
         self.model = model
         self.spec = spec
@@ -27,18 +27,18 @@ class Motorcycle(Vehicle):
 
 class VehicleFactory(ABC):
     @abstractmethod
-    def create_car(self, make, model) -> Vehicle:
+    def create_car(self, make: str, model: str) -> Vehicle:
         pass
 
     @abstractmethod
-    def create_motorcycle(self, make, model) -> Vehicle:
+    def create_motorcycle(self, make: str, model: str) -> Vehicle:
         pass
 
 
 class USVehicleFactory(VehicleFactory):
-    spec = "US Spec"
+    spec: str = "US Spec"
 
-    def create_car(self, make, model) -> Vehicle:
+    def create_car(self, make: str, model: str) -> Vehicle:
         return Car(make, model, self.spec)
 
     def create_motorcycle(self, make, model) -> Vehicle:
@@ -46,16 +46,16 @@ class USVehicleFactory(VehicleFactory):
 
 
 class EUVehicleFactory(VehicleFactory):
-    spec = "EU Spec"
+    spec: str = "EU Spec"
 
-    def create_car(self, make, model) -> Vehicle:
+    def create_car(self, make: str, model: str) -> Vehicle:
         return Car(make, model, self.spec)
 
-    def create_motorcycle(self, make, model) -> Vehicle:
+    def create_motorcycle(self, make: str, model: str) -> Vehicle:
         return Motorcycle(make, model, self.spec)
 
 
-def main():
+def main() -> None:
     us_factory = USVehicleFactory()
     vehicle1 = us_factory.create_car("Ford", "Mustang")
     vehicle1.start_engine()

@@ -1,75 +1,84 @@
 from abc import ABC, abstractmethod
+import logging
+from typing import List
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 
 
 class Book:
-    def __init__(self, title, author, year):
+    def __init__(self, title: str, author: str, year: str) -> None:
         self.title = title
         self.author = author
         self.year = year
 
-    def __str__(self):
-        return f"{self.title} {self.author} {self.year}"
 
-
-class LibraryInterface(ABC):
+class LibraryReadInterface(ABC):
     @abstractmethod
-    def add_book(self, book: Book):
+    def show_books(self) -> None:
+        pass
+
+
+class LibraryWriteInterface(ABC):
+    @abstractmethod
+    def add_book(self, book: Book) -> None:
         pass
 
     @abstractmethod
-    def remove_book(self, title: str):
+    def remove_book(self, title: str) -> None:
         pass
 
-    @abstractmethod
-    def show_books(self):
-        pass
+
+class LibraryInterface(LibraryReadInterface, LibraryWriteInterface, ABC):
+    pass
 
 
 class Library(LibraryInterface):
-    def __init__(self):
-        self.books = []
+    def __init__(self) -> None:
+        self.books: List[Book] = []
 
-    def add_book(self, book: Book):
+    def add_book(self, book: Book) -> None:
         for book_item in self.books:
             if book.title == book_item.title:
-                print("Book with the same title already exists.")
+                logging.info("Book with the same title already exists.")
                 return
 
         self.books.append(book)
 
-    def remove_book(self, title: str):
+    def remove_book(self, title: str) -> None:
         for book in self.books:
             if book.title == title:
                 self.books.remove(book)
                 return
 
-        print("Book not found.")
-        return
+        logging.info("Book not found.")
 
-    def show_books(self):
+    def show_books(self) -> None:
         if len(self.books) == 0:
-            print("No books in library.")
+            logging.info("No books in library.")
+            return
 
         for book in self.books:
-            print(f"Title: {book.title}, Author: {book.author}, Year: {book.year}")
+            logging.info(
+                f"Title: {book.title}, Author: {book.author}, Year: {book.year}"
+            )
 
 
 class LibraryManager:
-    def __init__(self, library):
+    def __init__(self, library: LibraryInterface) -> None:
         self.library = library
 
-    def add_book(self, title: str, author: str, year: str):
+    def add_book(self, title: str, author: str, year: str) -> None:
         book = Book(title, author, year)
         self.library.add_book(book)
 
-    def remove_book(self, title: str):
+    def remove_book(self, title: str) -> None:
         self.library.remove_book(title)
 
-    def show_books(self):
+    def show_books(self) -> None:
         self.library.show_books()
 
 
-def main():
+def main() -> None:
     library = Library()
     manager = LibraryManager(library)
 
@@ -90,7 +99,7 @@ def main():
             case "exit":
                 break
             case _:
-                print("Invalid command. Please try again.")
+                logging.info("Invalid command. Please try again.")
 
 
 if __name__ == "__main__":
